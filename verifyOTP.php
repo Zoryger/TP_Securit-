@@ -4,8 +4,7 @@ $connexion = mysqli_connect($host, $utilisateur, $mot_de_passe, $nom_de_la_base)
 
 session_start();
 
-echo $_SESSION['nom_utilisateur'];
-echo $_SESSION["sql"];
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $otpGive = $_POST['otp'];
     $dateNow = strtotime("now");
@@ -16,10 +15,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isLessThanFiveMinutes($dateNow, $row["otp_time"])) {
         if ($row["otp"] == $otpGive) {
             $_SESSION['user_id'] = $row["id"];
+            header("Location: formulaire.php");
+        } else {
+            echo "Mauvais code !";
         }
+    } else {
+        echo "Trop tard !";
     }
-    header("Location: formulaire.php");
-    exit;
 }
 
 function isLessThanFiveMinutes($timestamp1, $timestamp2)
