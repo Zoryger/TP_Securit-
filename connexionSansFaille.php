@@ -7,12 +7,11 @@ if (!$connexion) {
 }
 mysqli_set_charset($connexion, "utf8");
 
-$nom_utilisateur = $_POST['nom_utilisateur'];
-$mot_de_passe = $_POST['mot_de_passe'];
+$nom_utilisateur = mysqli_real_escape_string($connexion, $_POST['nom_utilisateur']);
+$mot_de_passe = mysqli_real_escape_string($connexion, $_POST['mot_de_passe']);
 
 $requete = "SELECT * FROM utilisateurs WHERE nom_utilisateur = '" . $nom_utilisateur . "' AND mot_de_passe = '" . $mot_de_passe . "'";
 $resultat = mysqli_query($connexion, $requete);
-
 
 if (mysqli_num_rows($resultat) == 1) {
     session_start();
