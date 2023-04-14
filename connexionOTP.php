@@ -21,12 +21,14 @@ $resultat = mysqli_query($connexion, $requete);
 if (mysqli_num_rows($resultat) == 1) {
     $row = mysqli_fetch_assoc($resultat);
     $_SESSION['nom_utilisateur'] = $nom_utilisateur;
+    $_SESSION['id'] = $row["id"];
+    $id = $_SESSION["id"];
     $otp = codeOTP();
     $date = strtotime("now");
     $sql2 = "UPDATE `utilisateurs` SET `otp`='$otp', `otp_time`='$date' WHERE nom_utilisateur ='$nom_utilisateur' AND mot_de_passe = '$mot_de_passe'";
     $res = mysqli_query($connexion, $sql2);
     sendOTPEmail($otp, $row["email"]);
-    header("Location: verifyOTP.php");
+    header("Location: verifyOTP.php?id=$id");
     exit;
 } else {
     echo "Nom d'utilisateur ou mot de passe incorrect";

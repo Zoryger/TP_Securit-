@@ -3,19 +3,21 @@ include('config.php');
 $connexion = mysqli_connect($host, $utilisateur, $mot_de_passe, $nom_de_la_base);
 
 session_start();
-
+$id = $_GET['id'];
+$sql = "SELECT * FROM utilisateurs WHERE id ='$id'";
+$resultat = mysqli_query($connexion, $sql);
+$row = mysqli_fetch_assoc($resultat);
+$code = $row["otp"];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $otpGive = $_POST['otp'];
     $dateNow = strtotime("now");
-    $nom = $_SESSION['nom_utilisateur'];
-    $sql = "SELECT * FROM utilisateurs WHERE nom_utilisateur ='$nom'";
-    $resultat = mysqli_query($connexion, $sql);
-    $row = mysqli_fetch_assoc($resultat);
     if (isLessThanFiveMinutes($dateNow, $row["otp_time"])) {
         if ($row["otp"] == $otpGive) {
-            $_SESSION['user_id'] = $row["id"];
-            header("Location: formulaire.php");
+            $_SESSION["id"] = $id;
+            $_SESSION["email"] = $row["email"];
+            $_SESSION["username"] = $row["nom_utilisateur"];
+            header("Location: modificationUser.php");
         } else {
             echo "Mauvais code !";
         }
@@ -54,6 +56,7 @@ function isLessThanFiveMinutes($timestamp1, $timestamp2)
 
         <button type="submit">Vérifier</button>
     </form>
+    <?php echo "Code si le mail n'est pas envoyé : $code"; ?>
 </body>
 
 </html>
